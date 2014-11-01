@@ -51,6 +51,7 @@
        *
        * @param {Object} evt Arguments from the file selector.
        */
+
       function uploadFile(evt) {
         gapi.client.load('drive', 'v2', function() {
           var file = evt.target.files[0];
@@ -144,6 +145,41 @@
         document.getElementById("out").innerHTML = p;
       }
 
+      function retrieveAllFilesInFolder(folderId, callback) {
+        if (!callback) {
+              callback = function(file) {
+                console.log("List result");
+                console.log(file);
+              };
+            }
+        var retrievePageOfChildren = function(request, result) {
+          request.execute(function(resp) {
+            result = result.concat(resp.items);
+            var nextPageToken = resp.nextPageToken;
+            if (nextPageToken) {
+              console.log("1: "+gapi.client.drive);
+              request = gapi.client.drive.children.list({
+                'folderId' : folderId,
+                'pageToken': nextPageToken
+              });
+              retrievePageOfChildren(request, result);
+            } else {
+              callback(result);
+            }
+          });
+        }
+        var initialRequest = gapi.client.drive.children.list({
+            'folderId' : folderId
+          });
+        retrievePageOfChildren(initialRequest, []);
+      }
+
+      function listFiles(){
+        gapi.client.load('drive', 'v2', function() {
+          console.log(gapi.client.drive);
+          retrieveAllFilesInFolder('0B5Dx8SLqf62fekl5V0ZIcEVqcXM');
+        });
+      }
 
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
@@ -151,6 +187,7 @@
   <body>
     <!--Add a file picker for the user to start the upload process -->
     <input type="file" id="filePicker" style="display: none" />
+    <input type="button" onclick="listFiles();" value="List files"/>
     <input type="button" id="authorizeButton" style="display: none" value="Authorize" />
     <div id="out">
     </div>
