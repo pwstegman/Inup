@@ -62,7 +62,7 @@
 
       function createFolder(fileData, callback){
         data = new Object();
-        data.title = fileData.name+".inup";
+        data.title = "Inup-"+fileData.name+".inup";
         data.parents = [{"id":"0B5Dx8SLqf62fekl5V0ZIcEVqcXM"}];
         data.mimeType = "application/vnd.google-apps.folder";
         gapi.client.drive.files.insert({'resource': data}).execute(function(file){
@@ -149,7 +149,9 @@
         if (!callback) {
               callback = function(file) {
                 console.log("List result");
-                console.log(file);
+                for(var i=0;i<file.length;i++){
+                  console.log(file[i]);
+                }
               };
             }
         var retrievePageOfChildren = function(request, result) {
@@ -160,7 +162,8 @@
               console.log("1: "+gapi.client.drive);
               request = gapi.client.drive.children.list({
                 'folderId' : folderId,
-                'pageToken': nextPageToken
+                'pageToken': nextPageToken,
+                'q' : "title contains 'Inup'"
               });
               retrievePageOfChildren(request, result);
             } else {
@@ -169,7 +172,8 @@
           });
         }
         var initialRequest = gapi.client.drive.children.list({
-            'folderId' : folderId
+            'folderId' : folderId,
+            'q' : "title contains 'Inup'"
           });
         retrievePageOfChildren(initialRequest, []);
       }
