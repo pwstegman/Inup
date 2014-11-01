@@ -102,7 +102,8 @@
             console.log("L: "+curData.length);
             var contentType = "text/plain";
             var metadata = {
-              'title': fileData.name+"."+itt+".txt",
+              //'title': fileData.name+"."+itt+".txt",
+              'title': itt,
               'mimeType': contentType,
               'parents': [{"kind":"drive#fileLink","id":id}]
             };
@@ -180,11 +181,54 @@
         retrievePageOfChildren(initialRequest, []);
       }
 
+      filePieces = [];
+
+      function assembleFiles(folderId, callback) {
+        if (!callback) {
+              callback = function(file) {
+                for(var i=0;i<file.length;i++){
+                  var id = file[i]["id"];
+                  getFileName(id,function(r){
+                    filePieces.push([r.title,r.id]);
+                    console.log("Assemble: "+r.id+" : "+r.title);
+                  });
+                }
+              };
+            }
+        var retrievePageOfChildren = function(request, result) {
+          request.execute(function(resp) {
+            result = result.concat(resp.items);
+            var nextPageToken = resp.nextPageToken;
+            if (nextPageToken) {
+              request = gapi.client.drive.children.list({
+                'folderId' : folderId,
+                'pageToken': nextPageToken
+              });
+              retrievePageOfChildren(request, result);
+            } else {
+              callback(result);
+            }
+          });
+        }
+        var initialRequest = gapi.client.drive.children.list({
+            'folderId' : folderId
+          });
+        retrievePageOfChildren(initialRequest, []);
+      }
+
       function listFiles(){
         gapi.client.load('drive', 'v2', function() {
           console.log(gapi.client.drive);
           retrieveAllFilesInFolder('0B5Dx8SLqf62fekl5V0ZIcEVqcXM');
         });
+      }
+
+      function getFileName(fileId,callback) {
+        var request = gapi.client.drive.files.get({
+          'fileId': fileId
+        });
+
+        request.execute(callback);
       }
 
       function printFile(fileId) {
@@ -195,8 +239,12 @@
           console.log('Title: ' + resp.title);
           console.log('Description: ' + resp.description);
           console.log('MIME type: ' + resp.mimeType);
-          document.getElementById("out").innerHTML += "<p>"+resp.title+"</p>";
+          document.getElementById("out").innerHTML += "<p>"+resp.title+" <button  id='"+fileId+"' onclick='moreData(this)'>Load parts</button></p>";
         });
+      }
+
+      function moreData(elm){
+        assembleFiles(elm.id);
       }
 
     </script>
@@ -208,6 +256,8 @@
     <input type="button" onclick="listFiles();" value="List files"/>
     <input type="button" id="authorizeButton" style="display: none" value="Authorize" />
     <div id="out">
+    </div>
+    <div id="out2">
     </div>
   </body>
 </html>
