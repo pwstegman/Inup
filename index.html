@@ -193,7 +193,6 @@
                     filePieces.push([r.title,r.id,r["exportLinks"]["text/plain"]]);
                     console.log(r);
                     console.log("Assemble: "+r.id+" : "+r.title+" : "+r["exportLinks"]["text/plain"]);
-                    idsToName[r.id] = r.title;
                   });
                 }
               };
@@ -240,11 +239,14 @@
         });
         request.execute(function(resp) {
           document.getElementById("out").innerHTML += "<p>"+resp.title+" <button  id='"+fileId+"' onclick=\"moreData(this);\">Load parts</button><button onclick='createFileData();'>Assemble parts</button></p>";
+            idsToName[fileId] = resp.title;
         });
       }
 
       curId = 0;
       function moreData(elm){
+        filePieces = [];
+        fileData = [];
         curId = elm.id;
         assembleFiles(elm.id);
       }
@@ -252,18 +254,24 @@
       fileData = [];
 
       function createFileData(){
+        filePieces.sort();
         for(var i=0;i<filePieces.length;i++){
+          cid = parseInt(filePieces[i][0])-1;
+          console.log(filePieces);
           setTimeout(function(n){
             downloadFile(n);
-          }, 500*i, i);
+          }, 500*i, cid);
         }
       }
 
       function saveTextAsFile()
       {
-        var textToWrite = fileData.join("");
-        var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+        var filename = idsToName[curId];
+        var textFileAsBlob = b64toBlob(fileData.join(""));
+        //var textFileAsBlob = new Blob(data, {type: ""});
         var fileNameToSaveAs = filename.substr(0,filename.length-5);
+
+        console.log("Saving "+fileNameToSaveAs);
 
         var downloadLink = document.createElement("a");
         downloadLink.download = fileNameToSaveAs;
@@ -285,6 +293,34 @@
         }
 
         downloadLink.click();
+      }
+
+      function b64toBlob(b64Data, contentType, sliceSize) {
+          contentType = contentType || '';
+          sliceSize = sliceSize || 512;
+
+          var byteCharacters = atob(b64Data);
+          var byteArrays = [];
+
+          for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+              var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+              var byteNumbers = new Array(slice.length);
+              for (var i = 0; i < slice.length; i++) {
+                  byteNumbers[i] = slice.charCodeAt(i);
+              }
+
+              var byteArray = new Uint8Array(byteNumbers);
+
+              byteArrays.push(byteArray);
+          }
+
+          var blob = new Blob(byteArrays, {type: contentType});
+          return blob;
+      }
+
+      function outBase64(){
+        document.getElementById("out3").innerHTML = fileData[0];
       }
 
       function downloadFile(num) {
@@ -320,6 +356,8 @@
     <div id="out">
     </div>
     <div id="out2">
+    </div>
+    <div id="out3">
     </div>
   </body>
 </html>
