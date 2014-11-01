@@ -127,6 +127,8 @@
             if (!callback) {
               callback = function(file) {
                 console.log(file);
+                progress ++;
+                updateLoading(progress,itt);
               };
             }
             setTimeout(function(r,c) {
@@ -137,6 +139,11 @@
         }
       }
 
+      function updateLoading(i,t){
+        var p = Math.round(i/t*1000)/10+"%";
+        document.getElementById("out").innerHTML = p;
+      }
+
 
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
@@ -145,5 +152,7 @@
     <!--Add a file picker for the user to start the upload process -->
     <input type="file" id="filePicker" style="display: none" />
     <input type="button" id="authorizeButton" style="display: none" value="Authorize" />
+    <div id="out">
+    </div>
   </body>
 </html>
