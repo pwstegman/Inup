@@ -151,6 +151,7 @@
                 console.log("List result");
                 for(var i=0;i<file.length;i++){
                   console.log(file[i]);
+                  console.log(printFile(file[i]["id"]));
                 }
               };
             }
@@ -182,6 +183,17 @@
         gapi.client.load('drive', 'v2', function() {
           console.log(gapi.client.drive);
           retrieveAllFilesInFolder('0B5Dx8SLqf62fekl5V0ZIcEVqcXM');
+        });
+      }
+
+      function printFile(fileId) {
+        var request = gapi.client.drive.files.get({
+          'fileId': fileId
+        });
+        request.execute(function(resp) {
+          console.log('Title: ' + resp.title);
+          console.log('Description: ' + resp.description);
+          console.log('MIME type: ' + resp.mimeType);
         });
       }
 
