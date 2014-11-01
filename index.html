@@ -54,7 +54,21 @@
       function uploadFile(evt) {
         gapi.client.load('drive', 'v2', function() {
           var file = evt.target.files[0];
-          insertFile(file);
+          createFolder(file);
+          //insertFile(file);
+        });
+      }
+
+      function createFolder(fileData, callback){
+        data = new Object();
+        data.title = fileData.name+".inup";
+        data.parents = [{"id":"0B5Dx8SLqf62fekl5V0ZIcEVqcXM"}];
+        data.mimeType = "application/vnd.google-apps.folder";
+        gapi.client.drive.files.insert({'resource': data}).execute(function(file){
+          console.log("Created folder");
+          console.log(file);
+          console.log(file.id);
+          insertFile(fileData, file.id);
         });
       }
 
@@ -78,6 +92,8 @@
           var point = 0;
           itt = 0;
           var maxSize = 1000000;
+          progress = 0;
+          document.getElementById("out").innerHTML = "Processing data...";
           while(point < base64Data.length){
             itt++;
             curData = base64Data.substr(point,maxSize);
@@ -111,16 +127,12 @@
             if (!callback) {
               callback = function(file) {
                 console.log(file);
-                progress ++;
-                updateLoading(progress,itt);
               };
             }
             request.execute(callback);
-            point+=maxSize;
           }
         }
       }
-
 
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
