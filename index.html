@@ -182,6 +182,7 @@
       }
 
       filePieces = [];
+      idsToName = {};
 
       function assembleFiles(folderId, callback) {
         if (!callback) {
@@ -189,8 +190,10 @@
                 for(var i=0;i<file.length;i++){
                   var id = file[i]["id"];
                   getFileName(id,function(r){
-                    filePieces.push([r.title,r.id]);
-                    console.log("Assemble: "+r.id+" : "+r.title);
+                    filePieces.push([r.title,r.id,r["exportLinks"]["text/plain"]]);
+                    console.log(r);
+                    console.log("Assemble: "+r.id+" : "+r.title+" : "+r["exportLinks"]["text/plain"]);
+                    idsToName[r.id] = r.title;
                   });
                 }
               };
@@ -236,15 +239,74 @@
           'fileId': fileId
         });
         request.execute(function(resp) {
-          console.log('Title: ' + resp.title);
-          console.log('Description: ' + resp.description);
-          console.log('MIME type: ' + resp.mimeType);
-          document.getElementById("out").innerHTML += "<p>"+resp.title+" <button  id='"+fileId+"' onclick='moreData(this)'>Load parts</button></p>";
+          document.getElementById("out").innerHTML += "<p>"+resp.title+" <button  id='"+fileId+"' onclick=\"moreData(this);\">Load parts</button><button onclick='createFileData();'>Assemble parts</button></p>";
         });
       }
 
+      curId = 0;
       function moreData(elm){
+        curId = elm.id;
         assembleFiles(elm.id);
+      }
+
+      fileData = [];
+
+      function createFileData(){
+        for(var i=0;i<filePieces.length;i++){
+          setTimeout(function(n){
+            downloadFile(n);
+          }, 500*i, i);
+        }
+      }
+
+      function saveTextAsFile()
+      {
+        var textToWrite = fileData.join("");
+        var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+        var fileNameToSaveAs = filename.substr(0,filename.length-5);
+
+        var downloadLink = document.createElement("a");
+        downloadLink.download = fileNameToSaveAs;
+        downloadLink.innerHTML = "Download File";
+        if (window.webkitURL != null)
+        {
+          // Chrome allows the link to be clicked
+          // without actually adding it to the DOM.
+          downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+        }
+        else
+        {
+          // Firefox requires the link to be added to the DOM
+          // before it can be clicked.
+          downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+          downloadLink.onclick = destroyClickedElement;
+          downloadLink.style.display = "none";
+          document.body.appendChild(downloadLink);
+        }
+
+        downloadLink.click();
+      }
+
+      function downloadFile(num) {
+
+        file = filePieces[num][2];
+
+        if (file) {
+          var accessToken = gapi.auth.getToken().access_token;
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', file);
+          xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+          xhr.onload = function() {
+            console.log("Response");
+            fileData[num] = xhr.responseText;
+          };
+          xhr.onerror = function() {
+            console.log("error");
+          };
+          xhr.send();
+        } else {
+          console.log("error 2");
+        }
       }
 
     </script>
