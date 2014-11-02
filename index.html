@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
     <script type="text/javascript">
-      var CLIENT_ID = '922026020709-t1h52dg86rlmle8msrteh2d3tp6a35h8.apps.googleusercontent.com';
+      var CLIENT_ID = '922026020709-t1h52dg86rlmle8msrteh2d3tp6a35h8.apps.googleusercontent.com'; //Your client ID generated in the cloud console
       var SCOPES = 'https://www.googleapis.com/auth/drive';
+      var mainFolderId = "0B5Dx8SLqf62fekl5V0ZIcEVqcXM"; //The id of the folder where files are stored.  Any empty folder will do.
 
       /**
        * Called when the client library is loaded to start the auth flow.
@@ -39,6 +40,7 @@
           // Access token has been successfully retrieved, requests can be sent to the API.
           //filePicker.style.display = 'block';
           filePicker.onchange = uploadFile;
+          listFiles();
         } else {
           // No access token could be retrieved, show the button to start the authorization flow.
           authButton.style.display = 'block';
@@ -67,7 +69,7 @@
       function createFolder(fileData, callback){
         data = new Object();
         data.title = "Inup-"+fileData.name+".inup";
-        data.parents = [{"id":"0B5Dx8SLqf62fekl5V0ZIcEVqcXM"}];
+        data.parents = [{"id":mainFolderId}];
         data.mimeType = "application/vnd.google-apps.folder";
         gapi.client.drive.files.insert({'resource': data}).execute(function(file){
           console.log("Created folder");
@@ -98,7 +100,7 @@
           itt = 0;
           var maxSize = 1000000;
           progress = 0;
-          document.getElementById("out").innerHTML = "Processing data...";
+          document.getElementById("out2").innerHTML = "Processing data...";
           while(point < base64Data.length){
             itt++;
             curData = base64Data.substr(point,maxSize);
@@ -147,7 +149,13 @@
 
       function updateLoading(i,t){
         var p = Math.round(i/t*1000)/10+"%";
-        document.getElementById("out").innerHTML = p;
+        document.getElementById("out2").innerHTML = p;
+        if(p == "100%"){
+          setTimeout(function(){
+            document.getElementById("out2").innerHTML = "";
+            listFiles();
+          },2000);
+        }
       }
 
       function retrieveAllFilesInFolder(folderId, callback) {
@@ -375,9 +383,15 @@
 
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <link rel="shortcut icon" href="icon.png">
     <style>
+    body{
+        background-color:#DDD;
+      }
     .mainbox{
-        max-width:650px; margin-left:auto; margin-right:auto; background-color:#DDD; border-radius:20px; margin-top:25px; text-align:center; padding:15px; padding-bottom: 50px;
+        border:1px solid #BBB;
+        max-width:650px; margin-left:auto; margin-right:auto; background-color:#FFF; border-radius:20px; margin-top:25px; text-align:center; padding:15px; padding-bottom: 50px;
+        box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
     }
     </style>
   </head>
@@ -385,15 +399,15 @@
     <!--Add a file picker for the user to start the upload process -->
     <div class="mainbox">
     <h1 style="margin-bottom:0; font-size:4em; margin-top:0;">Inup</h1>
-    <h2 style="color:#555; margin-top:0; margin-bottom:20px;">Disk space remaining: 100 Petabytes</h2>
+    <h2 style="color:#555; margin-top:0; margin-bottom:20px;">Disk space remaining: Infinity</h2>
     <button style="width:40%; height:50px; font-size:1.2em;"class="btn btn-success" onclick="document.getElementById('filePicker').click();">Upload file</button>
     <input type="file" id="filePicker" style="display: none;" />
-    <input style="width:40%; height:50px; font-size:1.2em;" class="btn btn-primary" type="button" onclick="listFiles();" value="List files"/>
+    <input style="width:40%; height:50px; font-size:1.2em;" class="btn btn-primary" type="button" onclick="listFiles();" value="Reload files"/>
     <input class="btn btn-primary" type="button" id="authorizeButton" style="display: none" value="Authorize" />
+    <div id="out2" style="text-align:center; font-size:1.2em; padding-top:5px;">
+    </div>
     <table id="out" cellspacing="5" style="margin-top:10px; width:100%; margin-left:auto; margin-right:auto;">
     </table>
-    <div id="out2">
-    </div>
     <div id="out3">
     </div>
   </div>
