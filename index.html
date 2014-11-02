@@ -252,7 +252,7 @@
           if(title.length > 20){
             title = title.substr(0,9)+"..."+title.substr(title.length-8,8);
           }
-          document.getElementById("out").innerHTML += "<tr><td style='text-align:right;'>"+title+"</td><td><button id='"+fileId+"' class='btn btn-default' onclick=\"moreData(this);\">Download</button></td></tr>";
+          document.getElementById("out").innerHTML += "<tr'><td style='text-align:right; padding-right:10px; width:50%;'>"+title+"</td><td><button id='"+fileId+"' class='btn btn-default' onclick=\"moreData(this);\" style='margin:4px;'>Download</button></td></tr>";
             idsToName[fileId] = resp.title;
         });
       }
@@ -379,7 +379,7 @@
     <input type="file" id="filePicker" style="display: none;" />
     <input style="width:40%; height:50px; font-size:1.2em;" class="btn btn-primary" type="button" onclick="listFiles();" value="List files"/>
     <input class="btn btn-primary" type="button" id="authorizeButton" style="display: none" value="Authorize" />
-    <table id="out" cellspacing="5" style="margin-top:10px; width:50%; margin-left:auto; margin-right:auto;">
+    <table id="out" cellspacing="5" style="margin-top:10px; width:100%; margin-left:auto; margin-right:auto;">
     </table>
     <div id="out2">
     </div>
