@@ -242,7 +242,12 @@
           'fileId': fileId
         });
         request.execute(function(resp) {
-          document.getElementById("out").innerHTML += "<p style='font-size:1.5em;'>"+resp.title+"</p><p><button class='btn btn-primary' id='"+fileId+"' onclick=\"moreData(this);\">Load</button><button class='btn btn-primary' onclick='createFileData();'>Assemble</button><button class='btn btn-primary' onclick='saveTextAsFile();'>Download</button></p>";
+          var title = resp.title;
+          title = title.substr(5);
+          if(title.length > 20){
+            title = title.substr(0,9)+"..."+title.substr(title.length-8,8);
+          }
+          document.getElementById("out").innerHTML += "<p style='font-size:1.5em;'>"+title+"</p><p><button class='btn btn-default' style='margin-right:5px;' id='"+fileId+"' onclick=\"moreData(this);\">Load</button><button style='margin-right:5px;' class='btn btn-default' onclick='createFileData();'>Assemble</button><button class='btn btn-default' onclick='saveTextAsFile();'>Download</button></p>";
             idsToName[fileId] = resp.title;
         });
       }
@@ -351,18 +356,22 @@
 
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <style>
+    .mainbox{
+        max-width:650px; margin-left:auto; margin-right:auto; background-color:#DDD; border-radius:20px; margin-top:25px; text-align:center; padding:15px; padding-bottom: 50px;
+    }
+    </style>
   </head>
   <body>
     <!--Add a file picker for the user to start the upload process -->
-    <div style="max-width:650px; margin-left:auto; margin-right:auto; background-color:#DDD; border-radius:20px; margin-top:25px; padding-bottom:50px; text-align:center;">
-    <h1 style="margin-bottom:0; font-size:4em;">Inup</h1>
-    <h2 style="color:#555; margin-top:0; margin-bottom:0;">Infinite file uploads to Google Drive</h2>
-    <h3 style="color:#555; margin-top:0;"><span style="color:#444; font-size:1.2em;">Unlimited</span> space on Google Drive, in a 100% legitimate way</h3>
-    <button class="btn btn-primary" onclick="document.getElementById('filePicker').click();">Upload file</button>
+    <div class="mainbox">
+    <h1 style="margin-bottom:0; font-size:4em; margin-top:0;">Inup</h1>
+    <h2 style="color:#555; margin-top:0; margin-bottom:20px;">Disk space remaining: 100 Petabytes</h2>
+    <button style="width:40%; height:50px; font-size:1.2em;"class="btn btn-success" onclick="document.getElementById('filePicker').click();">Upload file</button>
     <input type="file" id="filePicker" style="display: none;" />
-    <input class="btn btn-primary" type="button" onclick="listFiles();" value="List files"/>
+    <input style="width:40%; height:50px; font-size:1.2em;" class="btn btn-primary" type="button" onclick="listFiles();" value="List files"/>
     <input class="btn btn-primary" type="button" id="authorizeButton" style="display: none" value="Authorize" />
-    <div id="out">
+    <div id="out" style="margin-top:10px;">
     </div>
     <div id="out2">
     </div>
