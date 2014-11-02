@@ -286,7 +286,7 @@ html, body {
           'fileId': fileId
         });
         request.execute(function(resp) {
-          document.getElementById("out").innerHTML += "<p>"+resp.title+" <button class='but' id='"+fileId+"' onclick=\"moreData(this);\">Load parts</button><button class='but' onclick='createFileData();'>Assemble parts</button><button class='but' onclick='saveTextAsFile();'>Download assembled parts</button></p>";
+          document.getElementById("out").innerHTML += "<p style='font-size:1.5em;'>"+resp.title+"</p><p><button class='but' id='"+fileId+"' onclick=\"moreData(this);\">Load</button><button class='but' onclick='createFileData();'>Assemble</button><button class='but' onclick='saveTextAsFile();'>Download</button></p>";
             idsToName[fileId] = resp.title;
         });
       }
