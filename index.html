@@ -245,6 +245,8 @@
       }
 
       function listFiles(){
+        resetVars();
+        document.getElementById("out").innerHTML = "";
         gapi.client.load('drive', 'v2', function() {
           console.log(gapi.client.drive);
           retrieveAllFilesInFolder('0B5Dx8SLqf62fekl5V0ZIcEVqcXM');
@@ -395,6 +397,13 @@
         } else {
           console.log("error 2");
         }
+      }
+
+      function resetVars(){
+        filePieces = [];
+        idsToName = {};
+        curId = 0;
+        fileData = [];
       }
 
     </script>
