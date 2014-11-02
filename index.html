@@ -188,6 +188,15 @@
       filePieces = [];
       idsToName = {};
 
+      function setUpTo(a,b){
+        for(var i=0;i<b;i++){
+          if(a[i] == undefined){
+            return false;
+          }
+        }
+        return true;
+      }
+
       function assembleFiles(folderId, callback) {
         if (!callback) {
               callback = function(file) {
@@ -195,10 +204,8 @@
                 for(var i=0;i<file.length;i++){
                   var id = file[i]["id"];
                   getFileName(id,function(r){
-                    filePieces.push([r.title,r.id,r["exportLinks"]["text/plain"]]);
-                    console.log(r);
-                    console.log("Assemble: "+r.id+" : "+r.title+" : "+r["exportLinks"]["text/plain"]);
-                    if(parseInt(r.title) == totalFiles){
+                    filePieces[parseInt(r.title)-1] = [parseInt(r.title),r.id,r["exportLinks"]["text/plain"]];
+                    if(setUpTo(filePieces,totalFiles)){
                       console.log("Done");
                       createFileData();
                     }
@@ -268,8 +275,10 @@
       fileData = [];
 
       function createFileData(){
-        filePieces.sort();
+        //filePieces.sort();
+        console.log(filePieces);
         for(var i=0;i<filePieces.length;i++){
+          console.log("I",i);
           cid = parseInt(filePieces[i][0])-1;
           console.log(filePieces);
           setTimeout(function(n){
@@ -338,6 +347,8 @@
       }
 
       function downloadFile(num) {
+
+        console.log(num,filePieces.length);
 
         file = filePieces[num][2];
 
