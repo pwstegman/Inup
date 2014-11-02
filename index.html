@@ -191,12 +191,17 @@
       function assembleFiles(folderId, callback) {
         if (!callback) {
               callback = function(file) {
+                totalFiles = file.length;
                 for(var i=0;i<file.length;i++){
                   var id = file[i]["id"];
                   getFileName(id,function(r){
                     filePieces.push([r.title,r.id,r["exportLinks"]["text/plain"]]);
                     console.log(r);
                     console.log("Assemble: "+r.id+" : "+r.title+" : "+r["exportLinks"]["text/plain"]);
+                    if(parseInt(r.title) == totalFiles){
+                      console.log("Done");
+                      createFileData();
+                    }
                   });
                 }
               };
@@ -247,7 +252,7 @@
           if(title.length > 20){
             title = title.substr(0,9)+"..."+title.substr(title.length-8,8);
           }
-          document.getElementById("out").innerHTML += "<p style='font-size:1.5em;'>"+title+"</p><p><button class='btn btn-default' style='margin-right:5px;' id='"+fileId+"' onclick=\"moreData(this);\">Load</button><button style='margin-right:5px;' class='btn btn-default' onclick='createFileData();'>Assemble</button><button class='btn btn-default' onclick='saveTextAsFile();'>Download</button></p>";
+          document.getElementById("out").innerHTML += "<tr><td style='text-align:right;'>"+title+"</td><td><button id='"+fileId+"' class='btn btn-default' onclick=\"moreData(this);\">Download</button></td></tr>";
             idsToName[fileId] = resp.title;
         });
       }
@@ -344,6 +349,9 @@
           xhr.onload = function() {
             console.log("Response");
             fileData[num] = xhr.responseText;
+            if(num == filePieces.length-1){
+              saveTextAsFile();
+            }
           };
           xhr.onerror = function() {
             console.log("error");
@@ -371,8 +379,8 @@
     <input type="file" id="filePicker" style="display: none;" />
     <input style="width:40%; height:50px; font-size:1.2em;" class="btn btn-primary" type="button" onclick="listFiles();" value="List files"/>
     <input class="btn btn-primary" type="button" id="authorizeButton" style="display: none" value="Authorize" />
-    <div id="out" style="margin-top:10px;">
-    </div>
+    <table id="out" cellspacing="5" style="margin-top:10px; width:50%; margin-left:auto; margin-right:auto;">
+    </table>
     <div id="out2">
     </div>
     <div id="out3">
