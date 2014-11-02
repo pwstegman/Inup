@@ -1,54 +1,10 @@
 <html>
   <head>
-    <style>
-    .but {
-  -moz-box-shadow: 0px 1px 0px 0px #1c1b18;
-  -webkit-box-shadow: 0px 1px 0px 0px #1c1b18;
-  box-shadow: 0px 1px 0px 0px #1c1b18;
-  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #eae0c2), color-stop(1, #ccc2a6));
-  background:-moz-linear-gradient(top, #eae0c2 5%, #ccc2a6 100%);
-  background:-webkit-linear-gradient(top, #eae0c2 5%, #ccc2a6 100%);
-  background:-o-linear-gradient(top, #eae0c2 5%, #ccc2a6 100%);
-  background:-ms-linear-gradient(top, #eae0c2 5%, #ccc2a6 100%);
-  background:linear-gradient(to bottom, #eae0c2 5%, #ccc2a6 100%);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#eae0c2', endColorstr='#ccc2a6',GradientType=0);
-  background-color:#eae0c2;
-  -moz-border-radius:15px;
-  -webkit-border-radius:15px;
-  border-radius:15px;
-  border:2px solid #333029;
-  display:inline-block;
-  cursor:pointer;
-  color:#505739;
-  font-family:arial;
-  font-size:14px;
-  font-weight:bold;
-  padding:12px 16px;
-  text-decoration:none;
-  text-shadow:0px 1px 0px #ffffff;
-}
-.but:hover {
-  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ccc2a6), color-stop(1, #eae0c2));
-  background:-moz-linear-gradient(top, #ccc2a6 5%, #eae0c2 100%);
-  background:-webkit-linear-gradient(top, #ccc2a6 5%, #eae0c2 100%);
-  background:-o-linear-gradient(top, #ccc2a6 5%, #eae0c2 100%);
-  background:-ms-linear-gradient(top, #ccc2a6 5%, #eae0c2 100%);
-  background:linear-gradient(to bottom, #ccc2a6 5%, #eae0c2 100%);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ccc2a6', endColorstr='#eae0c2',GradientType=0);
-  background-color:#ccc2a6;
-}
-.but:active {
-  position:relative;
-  top:1px;
-}
-html, body {
-  background-color:#444;
-  text-align:center;
-  font-family: 'Open Sans', sans-serif;
-  color:#DDD;
-}
-    </style>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
     <script type="text/javascript">
       var CLIENT_ID = '922026020709-t1h52dg86rlmle8msrteh2d3tp6a35h8.apps.googleusercontent.com';
@@ -286,7 +242,7 @@ html, body {
           'fileId': fileId
         });
         request.execute(function(resp) {
-          document.getElementById("out").innerHTML += "<p style='font-size:1.5em;'>"+resp.title+"</p><p><button class='but' id='"+fileId+"' onclick=\"moreData(this);\">Load</button><button class='but' onclick='createFileData();'>Assemble</button><button class='but' onclick='saveTextAsFile();'>Download</button></p>";
+          document.getElementById("out").innerHTML += "<p style='font-size:1.5em;'>"+resp.title+"</p><p><button class='btn btn-primary' id='"+fileId+"' onclick=\"moreData(this);\">Load</button><button class='btn btn-primary' onclick='createFileData();'>Assemble</button><button class='btn btn-primary' onclick='saveTextAsFile();'>Download</button></p>";
             idsToName[fileId] = resp.title;
         });
       }
@@ -398,14 +354,14 @@ html, body {
   </head>
   <body>
     <!--Add a file picker for the user to start the upload process -->
-    <div style="max-width:650px; margin-left:auto; margin-right:auto; background-color:#555; border-radius:20px; margin-top:25px; padding-bottom:50px;">
+    <div style="max-width:650px; margin-left:auto; margin-right:auto; background-color:#DDD; border-radius:20px; margin-top:25px; padding-bottom:50px; text-align:center;">
     <h1 style="margin-bottom:0; font-size:4em;">Inup</h1>
-    <h2 style="color:#CCC; margin-top:0; margin-bottom:0;">Infinite file uploads to Google Drive</h2>
-    <h3 style="color:#CCC; margin-top:0;"><span style="color:#EEE; font-size:1.2em;">Unlimited</span> space on Google Drive, in a 100% legitimate way</h3>
-    <button class="but" onclick="document.getElementById('filePicker').click();">Upload file</button>
+    <h2 style="color:#555; margin-top:0; margin-bottom:0;">Infinite file uploads to Google Drive</h2>
+    <h3 style="color:#555; margin-top:0;"><span style="color:#444; font-size:1.2em;">Unlimited</span> space on Google Drive, in a 100% legitimate way</h3>
+    <button class="btn btn-primary" onclick="document.getElementById('filePicker').click();">Upload file</button>
     <input type="file" id="filePicker" style="display: none;" />
-    <input class="but" type="button" onclick="listFiles();" value="List files"/>
-    <input class="but" type="button" id="authorizeButton" style="display: none" value="Authorize" />
+    <input class="btn btn-primary" type="button" onclick="listFiles();" value="List files"/>
+    <input class="btn btn-primary" type="button" id="authorizeButton" style="display: none" value="Authorize" />
     <div id="out">
     </div>
     <div id="out2">
