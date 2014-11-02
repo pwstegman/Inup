@@ -67,6 +67,7 @@
         gapi.client.load('drive', 'v2', function() {
           var file = evt.target.files[0];
           createFolder(file);
+          document.getElementById("out2.1").innerHTML = "encoding file";
           //insertFile(file);
         });
       }
@@ -99,13 +100,12 @@
         reader.readAsBinaryString(fileData);
         reader.onload = function(e) {
           //var contentType = fileData.type || 'application/octet-stream';
-
           var base64Data = btoa(btoa(reader.result));
           var point = 0;
           itt = 0;
           var maxSize = 1000000;
           progress = 0;
-          document.getElementById("out2").innerHTML = "Processing data...";
+          document.getElementById("out2.1").innerHTML = "Splitting file";
           while(point < base64Data.length){
             itt++;
             curData = base64Data.substr(point,maxSize);
@@ -154,10 +154,12 @@
 
       function updateLoading(i,t){
         var p = Math.round(i/t*1000)/10+"%";
+        document.getElementById("out2.1").innerHTML = "Uploading file";
         document.getElementById("out2").innerHTML = p;
         if(p == "100%"){
           setTimeout(function(){
             document.getElementById("out2").innerHTML = "";
+            document.getElementById("out2.1").innerHTML = "";
             listFiles();
           },2000);
         }
@@ -360,7 +362,7 @@
 
         console.log(num,filePieces.length);
         var p = Math.round(num/(filePieces.length-1)*1000)/10+"";
-        if(p.indexOf(".") == -1){
+        if(p.indexOf(".") == -1 && p != "100"){
           p = p+".0";
         }
         document.getElementById("out2").innerHTML = p+"%";
