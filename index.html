@@ -357,6 +357,7 @@
       function downloadFile(num) {
 
         console.log(num,filePieces.length);
+        document.getElementById("out2").innerHTML = Math.round(num/filePieces.length*1000)/10+"%";
 
         file = filePieces[num][2];
 
@@ -369,6 +370,10 @@
             console.log("Response");
             fileData[num] = xhr.responseText;
             if(num == filePieces.length-1){
+              document.getElementById("out2").innerHTML = "100%";
+              setTimeout(function(){
+                  document.getElementById("out2").innerHTML = "";
+              },2000);
               saveTextAsFile();
             }
           };
@@ -404,7 +409,11 @@
     <input type="file" id="filePicker" style="display: none;" />
     <input style="width:40%; height:50px; font-size:1.2em;" class="btn btn-primary" type="button" onclick="listFiles();" value="Reload files"/>
     <input class="btn btn-primary" type="button" id="authorizeButton" style="display: none" value="Authorize" />
-    <div id="out2" style="text-align:center; font-size:1.2em; padding-top:5px;">
+    <div style="text-align:center; font-size:1.2em; padding-top:5px;">
+      <span id="out2">
+      </span>
+      <span id="out2.1">
+      </span>
     </div>
     <table id="out" cellspacing="5" style="margin-top:10px; width:100%; margin-left:auto; margin-right:auto;">
     </table>
