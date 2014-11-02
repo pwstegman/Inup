@@ -11,6 +11,11 @@
       var SCOPES = 'https://www.googleapis.com/auth/drive';
       var mainFolderId = "0B5Dx8SLqf62fekl5V0ZIcEVqcXM"; //The id of the folder where files are stored.  Any empty folder will do.
 
+      filePieces = [];
+      idsToName = {};
+      curId = 0;
+      fileData = [];
+
       /**
        * Called when the client library is loaded to start the auth flow.
        */
@@ -193,9 +198,6 @@
         retrievePageOfChildren(initialRequest, []);
       }
 
-      filePieces = [];
-      idsToName = {};
-
       function setUpTo(a,b){
         for(var i=0;i<b;i++){
           if(a[i] == undefined){
@@ -272,7 +274,6 @@
         });
       }
 
-      curId = 0;
       function moreData(elm){
         document.getElementById("out2.1").innerHTML = "Loading file info";
         filePieces = [];
@@ -280,8 +281,6 @@
         curId = elm.id;
         assembleFiles(elm.id);
       }
-
-      fileData = [];
 
       function createFileData(){
         //filePieces.sort();
